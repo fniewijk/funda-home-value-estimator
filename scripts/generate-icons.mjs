@@ -50,7 +50,10 @@ function chunk(type, data) {
   return Buffer.concat([length, content, checksum]);
 }
 
-for (const size of [16, 32, 48, 128]) {
+export function renderIcon(size, padding = 0) {
+  if (!Number.isInteger(size) || size <= 0 || padding < 0 || padding * 2 >= size) {
+    throw new Error("Invalid icon size or padding");
+  }
   const pixels = Buffer.alloc(size * (size * 4 + 1));
   for (let y = 0; y < size; y++) {
     for (let x = 0; x < size; x++) {
@@ -58,8 +61,8 @@ for (const size of [16, 32, 48, 128]) {
       let covered = 0;
       for (let sy = 0; sy < 4; sy++) {
         for (let sx = 0; sx < 4; sx++) {
-          const px = (x + (sx + 0.5) / 4) * 128 / size;
-          const py = (y + (sy + 0.5) / 4) * 128 / size;
+          const px = (x + (sx + 0.5) / 4 - padding) * 128 / (size - padding * 2);
+          const py = (y + (sy + 0.5) / 4 - padding) * 128 / (size - padding * 2);
           const polygon = polygons.findLast(({ points }) => contains(points, px, py));
           if (!polygon) continue;
           covered++;
@@ -76,9 +79,13 @@ for (const size of [16, 32, 48, 128]) {
   header.writeUInt32BE(size, 4);
   header[8] = 8;
   header[9] = 6;
-  await writeFile(new URL(`icon-${size}.png`, assets), Buffer.concat([
+  return Buffer.concat([
     Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]),
     chunk("IHDR", header), chunk("IDAT", deflateSync(pixels)), chunk("IEND", Buffer.alloc(0))
-  ]));
+  ]);
+}
+
+for (const size of [16, 32, 48, 128]) {
+  await writeFile(new URL(`icon-${size}.png`, assets), renderIcon(size));
 }
 console.log("Generated house icons at 16, 32, 48 and 128 pixels.");

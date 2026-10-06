@@ -6,6 +6,9 @@
   "scripts": {
     "test": "node --test",
     "build": "node scripts/build.mjs",
+    "package": "node scripts/package.mjs",
+    "store-icons": "node scripts/generate-store-icons.mjs",
+    "store-images": "node scripts/generate-store-images.mjs",
     "check": "node scripts/check.mjs"
   },
   "engines": {

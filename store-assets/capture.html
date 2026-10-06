@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Extension demonstration screenshot</title>
+  <style>
+    html, body { margin: 0; width: 1280px; height: 800px; overflow: hidden; background: #eff9fd; }
+    iframe { border: 0; width: 1280px; height: 800px; }
+    body.controls iframe { position: absolute; width: 370px; height: 1020px; left: 455px; top: 42px;
+      transform: scale(.8); transform-origin: top center; }
+    #demo { text-align: center; font: 600 14px system-ui; color: #6a281c; margin: 18px; }
+  </style>
+</head>
+<body>
+  <p id="demo"></p>
+  <iframe title="Extension demonstration"></iframe>
+  <script type="module">
+    const params = new URLSearchParams(location.search);
+    const language = params.get("lang") === "nl" ? "nl" : "en";
+    const controls = params.get("screen") === "controls";
+    const demo = language === "nl" ? "Demonstratie met voorbeeldgegevens — geen live advertentie of taxatie."
+      : "Demo using sample data — not a live listing or appraisal.";
+    const frame = document.querySelector("iframe");
+    if (controls) {
+      document.body.className = "controls";
+      document.getElementById("demo").textContent = demo;
+      const url = new URL("../extension/popup/popup.html", location.href);
+      const markup = await (await fetch(url)).text();
+      const mock = `<script>
+        window.browser = {
+          i18n: { getUILanguage: () => "${language}" },
+          storage: { local: { get: async () => ({ valuationSettings: {energyEnabled:true,gardenEnabled:true} }),
+            set: async () => {} }, onChanged: {addListener:()=>{}} },
+          tabs: {query:async()=>[{id:1,url:"https://www.funda.nl/detail/koop/utrecht/huis-prof-wentlaan-54/1234/"}],
+            sendMessage:async()=>({snapshot:{listing:{address:"Prof. Wentlaan 54 3571 AA Utrecht",askingPrice:895000},
+              valuation:{available:true,total:831714,difference:63286,warnings:[]}}})}
+        };
+      <\/script>`;
+      frame.srcdoc = markup.replace("<head>", `<head><base href="${url}">${mock}`);
+    } else {
+      document.getElementById("demo").remove();
+      frame.src = `../tests/fixtures/listing.html?lang=${language}`;
+      frame.addEventListener("load", () => {
+        const doc = frame.contentDocument;
+        doc.querySelector("main > p").textContent = demo;
+        for (const button of doc.querySelectorAll("main > button")) button.hidden = true;
+      });
+    }
+  </script>
+</body>
+</html>

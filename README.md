@@ -23,6 +23,11 @@ part of this change.
 
 ## Load it
 
+Store listing icons, bilingual demonstration screenshots and promotional tiles
+are in [store-assets](store-assets/). See the
+[submission guide](STORE-SUBMISSION.md#listing-artwork) for upload slots and
+regeneration commands. Listing artwork is separate from extension ZIPs.
+
 No npm installation or dependencies are required to use the extension.
 
 ### Chrome
@@ -157,12 +162,16 @@ is usable for temporary loading in both browsers.
 To make upload archives after building (macOS/Linux):
 
 ```sh
-(cd dist/chrome && zip -r ../funda-estimator-chrome.zip .)
-(cd dist/firefox && zip -r ../funda-estimator-firefox.zip .)
+node scripts/package.mjs
 ```
 
 Archives must contain `manifest.json` at their root. Store listing metadata,
 artwork, permission review and signing are separate release tasks.
+Packaging rebuilds both distributions, checks their manifests and syntax, creates
+fresh runtime-only archives and verifies ZIP integrity and entry lists.
+SHA-256 hashes are saved alongside the archives.
+See [store submission notes](STORE-SUBMISSION.md) for listing text, privacy and
+permission declarations, reviewer instructions and remaining publisher steps.
 
 ### Manual smoke test
 
@@ -199,6 +208,10 @@ It is not Funda's official logo. It appears in the popup, page panel and
 browser toolbar. PNG icons are generated from the SVG during builds, without
 external dependencies. To regenerate them separately, run
 `node scripts/generate-icons.mjs`.
+Store listing PNGs with transparent padding are in [store-assets](store-assets/):
+128 px for Chrome, 64/128 px for Firefox, and 256/512 px reusable versions.
+Regenerate with `node scripts/generate-store-icons.mjs`. These are listing
+assets, separate from the extension's toolbar icons and upload archives.
 
 The UI calls the result **Waardeindicatie**. It remains an asking-price-based
 heuristic, not an appraisal; the explanation and limitations are under

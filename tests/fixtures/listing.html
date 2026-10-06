@@ -34,6 +34,7 @@
     const stored = { valuationSettings: { energyEnabled: true, gardenEnabled: true } };
     const listeners = [];
     window.browser = {
+      i18n: { getUILanguage: () => new URLSearchParams(location.search).get("lang") || navigator.language },
       storage: {
         local: { get: async () => stored, set: async (value) => {
           const oldValue = { ...stored.valuationSettings };
