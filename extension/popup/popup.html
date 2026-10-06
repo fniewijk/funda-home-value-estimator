@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Funda woningwaarde</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header>
+    <img class="logo" src="../assets/logo.svg" width="48" height="48" alt="">
+    <p class="eyebrow">FUNDA HOME VALUE ESTIMATOR</p>
+    <h1>Woningwaarde-check</h1>
+    <p>Een transparante vergelijking met de buurt.</p>
+  </header>
+  <main>
+    <section aria-labelledby="controls-title">
+      <h2 id="controls-title">Controlepaneel</h2>
+      <p>De basis van de geschatte woningwaarde is de gemiddelde vraagprijs per m² in de buurt, vermenigvuldigd met de woonoppervlakte.</p>
+      <label class="control">
+        <span><strong>Energielabel meenemen</strong><small>Energielabelaanpassing</small></span>
+        <input id="energy-enabled" type="checkbox" disabled>
+      </label>
+      <label class="control">
+        <span><strong>Tuincorrectie meenemen</strong><small>Gemeten tuin of schatting uit perceel en woonlagen.</small></span>
+        <input id="garden-enabled" type="checkbox" disabled>
+      </label>
+      <p id="settings-status" class="status" role="status">Instellingen laden…</p>
+      <button id="retry" type="button" hidden>Opnieuw proberen</button>
+    </section>
+    <section aria-labelledby="listing-title">
+      <h2 id="listing-title">Huidige woning</h2>
+      <p id="listing-status" role="status">Woninggegevens laden…</p>
+      <div id="listing-result" hidden>
+        <p id="address"></p>
+        <p class="eyebrow">WAARDEINDICATIE</p>
+        <p id="estimate" class="estimate"></p>
+        <p id="comparison"></p>
+        <p><a id="huispedia-link" href="https://huispedia.nl/" target="_blank" rel="noopener noreferrer">Zoek op Huispedia voor een tweede mening</a></p>
+        <ul id="warnings"></ul>
+      </div>
+      <button id="refresh" type="button">Pagina opnieuw lezen</button>
+    </section>
+    <details id="calculation-details">
+      <summary>Hoe wordt dit berekend</summary>
+    </details>
+  </main>
+  <footer>Werkt lokaal op Funda. Geen account, tracking of externe dataverzending. Niet verbonden aan Funda.</footer>
+  <script src="../shared/i18n.js"></script>
+  <script src="../shared/links.js"></script>
+  <script src="../shared/model.js"></script>
+  <script src="../shared/settings.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

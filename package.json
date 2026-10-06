@@ -1,0 +1,14 @@
+{
+  "name": "funda-home-value-estimator",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Local, transparent Funda asking-price estimates for Chrome and Firefox.",
+  "scripts": {
+    "test": "node --test",
+    "build": "node scripts/build.mjs",
+    "check": "node scripts/check.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

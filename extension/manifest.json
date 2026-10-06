@@ -1,0 +1,35 @@
+{
+  "manifest_version": 3,
+  "name": "Funda Home Value Estimator",
+  "version": "0.1.0",
+  "description": "__MSG_extensionDescription__",
+  "default_locale": "en",
+  "permissions": ["storage", "activeTab"],
+  "icons": {
+    "16": "assets/icon-16.png",
+    "32": "assets/icon-32.png",
+    "48": "assets/icon-48.png",
+    "128": "assets/icon-128.png"
+  },
+  "action": {
+    "default_title": "__MSG_extensionTitle__",
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "assets/icon-16.png",
+      "32": "assets/icon-32.png"
+    }
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["assets/logo.svg"],
+      "matches": ["https://www.funda.nl/*", "https://funda.nl/*"]
+    }
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://www.funda.nl/*", "https://funda.nl/*"],
+      "js": ["shared/i18n.js", "shared/links.js", "shared/model.js", "shared/settings.js", "content/extractor.js", "content/panel.js", "content/content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

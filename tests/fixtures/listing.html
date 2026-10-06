@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <title>Funda estimator test fixture (not a live listing)</title>
+  <style>
+    body { font: 16px/1.5 system-ui; background: #f4f7f8; margin: 40px; color: #172b3a; }
+    main { max-width: 700px; background: white; padding: 32px; border-radius: 12px; }
+    dl { display: grid; grid-template-columns: 200px 1fr; } dd { margin: 0; }
+    h1 { font-size: 30px; } button { padding: 10px; margin: 4px; }
+  </style>
+</head>
+<body>
+  <main>
+    <p>Test fixture. Values from the supplied example; not a real Funda page.</p>
+    <h1>Prof. Wentlaan 54</h1>
+    <dl>
+      <dt>Vraagprijs</dt><dd>€ 895.000 kosten koper</dd>
+      <dt>Vraagprijs per m²</dt><dd>€ 7.851</dd>
+      <dt>Soort woonhuis</dt><dd>Eengezinswoning, tussenwoning</dd>
+      <dt>Wonen</dt><dd>114 m²</dd>
+      <dt>Perceel</dt><dd>156 m²</dd>
+      <dt>Aantal woonlagen</dt><dd>3 woonlagen</dd>
+      <dt>Energielabel</dt><dd>A</dd>
+    </dl>
+    <h2>Buurt</h2>
+    <p>Tuindorp en Van Lieflandlaan-West</p>
+    <p id="rate">Gem. vraagprijs / m² € 6.855</p>
+    <button id="energy" type="button">Toggle energy</button>
+    <button id="garden" type="button">Toggle garden</button>
+    <button id="missing" type="button">Toggle missing neighborhood rate</button>
+  </main>
+  <script>
+    const stored = { valuationSettings: { energyEnabled: true, gardenEnabled: true } };
+    const listeners = [];
+    window.browser = {
+      storage: {
+        local: { get: async () => stored, set: async (value) => {
+          const oldValue = { ...stored.valuationSettings };
+          Object.assign(stored, value);
+          listeners.forEach((listener) => listener({
+            valuationSettings: { oldValue, newValue: stored.valuationSettings }
+          }, "local"));
+        } },
+        onChanged: { addListener: (listener) => listeners.push(listener) }
+      },
+      runtime: {
+        getURL: (path) => new URL(`../../extension/${path}`, location.href).href,
+        onMessage: { addListener: () => {} }
+      }
+    };
+  </script>
+  <script src="../../extension/shared/i18n.js"></script>
+  <script src="../../extension/shared/links.js"></script>
+  <script src="../../extension/shared/model.js"></script>
+  <script src="../../extension/shared/settings.js"></script>
+  <script src="../../extension/content/extractor.js"></script>
+  <script src="../../extension/content/panel.js"></script>
+  <script>
+    // The fixture deliberately substitutes only the URL gate, not extraction or valuation.
+    FundaEstimator.isListingUrl = () => location.hash !== "#search";
+    for (const name of ["energy", "garden"]) {
+      document.getElementById(name).addEventListener("click", async () => {
+        const key = `${name}Enabled`;
+        await FundaEstimator.saveSettings({ ...stored.valuationSettings, [key]: !stored.valuationSettings[key] });
+      });
+    }
+    document.getElementById("missing").addEventListener("click", () => {
+      const rate = document.getElementById("rate");
+      rate.textContent = rate.textContent ? "" : "Gem. vraagprijs / m² € 6.855";
+    });
+  </script>
+  <script src="../../extension/content/content.js"></script>
+</body>
+</html>
